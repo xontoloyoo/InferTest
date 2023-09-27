@@ -162,9 +162,6 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
 
         display_progress('[~] Starting AI Cover Generation Pipeline...', 0, is_webui, progress)
 
-        with open(os.path.join(mdxnet_models_dir, 'model_data.json')) as infile:
-            mdx_model_params = json.load(infile)
-
         # if youtube url
         if urlparse(song_input).scheme == 'https':
             input_type = 'yt'
