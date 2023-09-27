@@ -183,10 +183,6 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
 
         song_dir = os.path.join(output_dir, song_id)
 
-        if not os.path.exists(song_dir):
-            os.makedirs(song_dir)
-            orig_song_path, vocals_path, instrumentals_path, main_vocals_path, backup_vocals_path, main_vocals_dereverb_path = preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type, progress)
-
         else:
             vocals_path, main_vocals_path = None, None
             paths = get_audio_paths(song_dir)
