@@ -13,6 +13,7 @@ import librosa
 import numpy as np
 import soundfile as sf
 import sox
+import yt_dlp
 from pedalboard import Pedalboard, Reverb, Compressor, HighpassFilter
 from pedalboard.io import AudioFile
 from pydub import AudioSegment
@@ -25,6 +26,31 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 mdxnet_models_dir = os.path.join(BASE_DIR, 'mdxnet_models')
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
+
+
+def get_youtube_video_id(url, ignore_playlist=True):
+    # Implementasi fungsi get_youtube_video_id
+    pass
+
+
+def yt_download(link):
+    # Implementasi fungsi yt_download
+    pass
+
+
+def raise_exception(error_msg, is_webui):
+    if is_webui:
+        raise gr.Error(error_msg)
+    else:
+        raise Exception(error_msg)
+
+
+# Fungsi display_progress dan raise_exception didefinisikan di sini
+def display_progress(message, percent, is_webui, progress=None):
+    if is_webui:
+        progress(percent, desc=message)
+    else:
+        print(message)
 
 
 def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
