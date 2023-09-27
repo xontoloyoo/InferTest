@@ -23,7 +23,6 @@ from rvc import Config, load_hubert, get_vc, rvc_infer
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-mdxnet_models_dir = os.path.join(BASE_DIR, 'mdxnet_models')
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
 
@@ -50,26 +49,6 @@ def get_rvc_model(voice_model, is_webui):
         raise_exception(error_msg, is_webui)
 
     return os.path.join(model_dir, rvc_model_filename), os.path.join(model_dir, rvc_index_filename) if rvc_index_filename else ''
-
-
-def get_audio_paths(song_dir):
-    orig_song_path = None
-    instrumentals_path = None
-    main_vocals_dereverb_path = None
-    backup_vocals_path = None
-
-    for file in os.listdir(song_dir):
-        if file.endswith('_Instrumental.wav'):
-            instrumentals_path = os.path.join(song_dir, file)
-            orig_song_path = instrumentals_path.replace('_Instrumental', '')
-
-        elif file.endswith('_Vocals_Main_DeReverb.wav'):
-            main_vocals_dereverb_path = os.path.join(song_dir, file)
-
-        elif file.endswith('_Vocals_Backup.wav'):
-            backup_vocals_path = os.path.join(song_dir, file)
-
-    return orig_song_path, instrumentals_path, main_vocals_dereverb_path, backup_vocals_path
 
 
 def convert_to_stereo(audio_path):
@@ -127,17 +106,6 @@ def preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type,
 
     song_output_dir = os.path.join(output_dir, song_id)
     orig_song_path = convert_to_stereo(orig_song_path)
-
-    display_progress('[~] Separating Vocals from Instrumental...', 0.1, is_webui, progress)
-    vocals_path, instrumentals_path = run_mdx(mdx_model_params, song_output_dir, os.path.join(mdxnet_models_dir, 'UVR-MDX-NET-Voc_FT.onnx'), orig_song_path, denoise=True, keep_orig=keep_orig)
-
-    display_progress('[~] Separating Main Vocals from Backup Vocals...', 0.2, is_webui, progress)
-    backup_vocals_path, main_vocals_path = run_mdx(mdx_model_params, song_output_dir, os.path.join(mdxnet_models_dir, 'UVR_MDXNET_KARA_2.onnx'), vocals_path, suffix='Backup', invert_suffix='Main', denoise=True)
-
-    display_progress('[~] Applying DeReverb to Vocals...', 0.3, is_webui, progress)
-    _, main_vocals_dereverb_path = run_mdx(mdx_model_params, song_output_dir, os.path.join(mdxnet_models_dir, 'Reverb_HQ_By_FoxJoy.onnx'), main_vocals_path, invert_suffix='DeReverb', exclude_main=True, denoise=True)
-
-    return orig_song_path, vocals_path, instrumentals_path, main_vocals_path, backup_vocals_path, main_vocals_dereverb_path
 
 
 def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method, index_rate, filter_radius, rms_mix_rate, protect, crepe_hop_length, is_webui):
