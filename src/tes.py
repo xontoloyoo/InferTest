@@ -53,6 +53,12 @@ def display_progress(message, percent, is_webui, progress=None):
         print(message)
 
 
+def get_hash(file_path):
+    # Menghitung hash dari nama file sebagai song_id
+    with open(file_path, "rb") as f:
+        return hashlib.md5(f.read()).hexdigest()
+
+
 def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
                         is_webui=0, main_gain=0, backup_gain=0, inst_gain=0, index_rate=0.5, filter_radius=3,
                         rms_mix_rate=0.25, f0_method='rmvpe', crepe_hop_length=128, protect=0.33, pitch_change_all=0,
@@ -80,7 +86,7 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
             input_type = 'local'
             song_input = song_input.strip('\"')
             if os.path.exists(song_input):
-                song_id = get_hash(song_input)
+                song_id = get_hash(song_input)  # Menggunakan fungsi get_hash
             else:
                 error_msg = f'{song_input} does not exist.'
                 song_id = None
@@ -127,8 +133,10 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
             if pitch_change_all != 0:
                 intermediate_files += [instrumentals_path, backup_vocals_path]
             for file in intermediate_files:
-                if file and os.path.exists(file):
+                with suppress(Exception):
                     os.remove(file)
+
+        display_progress('[~] AI Cover Generation Complete!', 1, is_webui, progress)
 
         return ai_cover_path
 
@@ -137,8 +145,8 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate a AI cover song in the song_output/id directory.', add_help=True)
-    parser.add_argument('-i', '--song-input', type=str, required=True, help='Link to a YouTube video or the filepath to a local mp3/wav file to create an AI cover of')
+    parser = argparse.ArgumentParser(description='Generate AI Music Covers using RVC and MDXNet.')
+    parser.add_argument('-i', '--song-input', type=str, required=True, help='Path to the audio file or YouTube URL you want to generate a cover of')
     parser.add_argument('-dir', '--rvc-dirname', type=str, required=True, help='Name of the folder in the rvc_models directory containing the RVC model file and optional index file to use')
     parser.add_argument('-p', '--pitch-change', type=int, required=True, help='Change the pitch of AI Vocals only. Generally, use 1 for male to female and -1 for vice-versa. (Octaves)')
     parser.add_argument('-k', '--keep-files', action=argparse.BooleanOptionalAction, help='Whether to keep all intermediate audio files generated in the song_output/id directory, e.g. Isolated Vocals/Instrumentals')
