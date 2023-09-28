@@ -18,12 +18,10 @@ from pedalboard import Pedalboard, Reverb, Compressor, HighpassFilter
 from pedalboard.io import AudioFile
 from pydub import AudioSegment
 
-from mdx import run_mdx
 from rvc import Config, load_hubert, get_vc, rvc_infer
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-mdxnet_models_dir = os.path.join(BASE_DIR, 'mdxnet_models')
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
 
@@ -163,7 +161,7 @@ def display_progress(message, percent, is_webui, progress=None):
         print(message)
 
 
-def preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type, progress=None):
+def preprocess_song(song_input, song_id, is_webui, input_type, progress=None):
     keep_orig = False
     if input_type == 'yt':
         display_progress('[~] Downloading song...', 0, is_webui, progress)
@@ -174,14 +172,6 @@ def preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type,
         keep_orig = True
     else:
         orig_song_path = None
-
-    song_output_dir = os.path.join(output_dir, song_id)
-    orig_song_path = convert_to_stereo(orig_song_path)
-
-    display_progress('[~] Applying DeReverb to Vocals...', 0.3, is_webui, progress)
-    _, main_vocals_dereverb_path = run_mdx(mdx_model_params, song_output_dir, os.path.join(mdxnet_models_dir, 'Reverb_HQ_By_FoxJoy.onnx'), orig_song_path, invert_suffix='DeReverb', exclude_main=True, denoise=True)
-
-    return orig_song_path, main_vocals_dereverb_path
 
 
 def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method, index_rate, filter_radius, rms_mix_rate, protect, crepe_hop_length, is_webui):
@@ -215,9 +205,6 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
 
         display_progress('[~] Starting AI Cover Generation Pipeline...', 0, is_webui, progress)
 
-        with open(os.path.join(mdxnet_models_dir, 'model_data.json')) as infile:
-            mdx_model_params = json.load(infile)
-
         # if youtube url
         if urlparse(song_input).scheme == 'https':
             input_type = 'yt'
@@ -241,7 +228,7 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
 
         if not os.path.exists(song_dir):
             os.makedirs(song_dir)
-            orig_song_path, main_vocals_dereverb_path = preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type, progress)
+            orig_song_path, vocals_path, instrumentals_path, main_vocals_path, backup_vocals_path, main_vocals_dereverb_path = preprocess_song(song_input, song_id, is_webui, input_type, progress)
 
         else:
             vocals_path, main_vocals_path = None, None
@@ -249,9 +236,9 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
 
             # if any of the audio files aren't available or keep intermediate files, rerun preprocess
             if any(path is None for path in paths) or keep_files:
-                orig_song_path, main_vocals_dereverb_path = preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type, progress)
+                orig_song_path, vocals_path, instrumentals_path, main_vocals_path, backup_vocals_path, main_vocals_dereverb_path = preprocess_song(song_input, song_id, is_webui, input_type, progress)
             else:
-                orig_song_path, main_vocals_dereverb_path = paths
+                orig_song_path, instrumentals_path, main_vocals_dereverb_path, backup_vocals_path = paths
 
         pitch_change = pitch_change * 12 + pitch_change_all
         ai_vocals_path = os.path.join(song_dir, f'{os.path.splitext(os.path.basename(orig_song_path))[0]}_{voice_model}_p{pitch_change}_i{index_rate}_fr{filter_radius}_rms{rms_mix_rate}_pro{protect}_{f0_method}{"" if f0_method != "mangio-crepe" else f"_{crepe_hop_length}"}.wav')
@@ -261,13 +248,16 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
             display_progress('[~] Converting voice using RVC...', 0.5, is_webui, progress)
             voice_change(voice_model, main_vocals_dereverb_path, ai_vocals_path, pitch_change, f0_method, index_rate, filter_radius, rms_mix_rate, protect, crepe_hop_length, is_webui)
 
+        display_progress('[~] Applying audio effects to Vocals...', 0.8, is_webui, progress)
+        ai_vocals_mixed_path = add_audio_effects(ai_vocals_path, reverb_rm_size, reverb_wet, reverb_dry, reverb_damping)
+
         if pitch_change_all != 0:
             display_progress('[~] Applying overall pitch change', 0.85, is_webui, progress)
             instrumentals_path = pitch_shift(instrumentals_path, pitch_change_all)
             backup_vocals_path = pitch_shift(backup_vocals_path, pitch_change_all)
 
         display_progress('[~] Combining AI Vocals and Instrumentals...', 0.9, is_webui, progress)
-        combine_audio([ai_vocals_mixed_path, output_format)
+        combine_audio([ai_vocals_mixed_path, backup_vocals_path, instrumentals_path], ai_cover_path, main_gain, backup_gain, inst_gain, output_format)
 
         if not keep_files:
             display_progress('[~] Removing intermediate audio files...', 0.95, is_webui, progress)
