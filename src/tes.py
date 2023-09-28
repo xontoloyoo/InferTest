@@ -190,7 +190,9 @@ def preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type,
     return orig_song_path, vocals_path, instrumentals_path, main_vocals_path, backup_vocals_path, main_vocals_dereverb_path
 
 
-def voice_change_pipeline(song_input, voice_model, pitch_change, is_webui=0, pitch_change_all=0):
+def voice_change_pipeline(song_input, voice_model, pitch_change, is_webui=0, index_rate=0.5, filter_radius=3,
+                          rms_mix_rate=0.25, f0_method='rmvpe', crepe_hop_length=128, protect=0.33, pitch_change_all=0,
+                          output_format='mp3', progress=gr.Progress()):
     try:
         if not song_input or not voice_model:
             raise_exception('Ensure that the song input field and voice model field are filled.', is_webui)
