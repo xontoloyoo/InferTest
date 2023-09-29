@@ -252,15 +252,12 @@ if __name__ == '__main__':
     parser.add_argument('-fr', '--filter-radius', type=int, default=3, help='A number between 0 and 7. If >=3: apply median filtering to the harvested pitch results. The value represents the filter radius and can reduce breathiness.')
     parser.add_argument('-rms', '--rms-mix-rate', type=float, default=0.25, help="A decimal number e.g. 0.25. Control how much to use the original vocal's loudness (0) or a fixed loudness (1).")
     parser.add_argument('-oformat', '--output-format', type=str, default='mp3', help='Output format of audio file. mp3 for smaller file size, wav for best quality')    
+    parser.add_argument('-rvc_dirname', '--rvc-dirname', type=str, required=True, help='Name of the folder in the rvc_models directory containing the RVC model files')
     args = parser.parse_args()
 
- rvc_dirname = args.rvc_dirname
+    rvc_dirname = args.rvc_dirname
     if not os.path.exists(os.path.join(rvc_models_dir, rvc_dirname)):
         raise Exception(f'The folder {os.path.join(rvc_models_dir, rvc_dirname)} does not exist.')
 
-    cover_path = song_cover_pipeline(args.song_input, rvc_dirname, args.pitch_change, args.keep_files,
-                                     index_rate=args.index_rate, filter_radius=args.filter_radius,
-                                     rms_mix_rate=args.rms_mix_rate, f0_method=args.pitch_detection_algo,
-                                     crepe_hop_length=args.crepe_hop_length, protect=args.protect,
-                                     pitch_change_all=args.pitch_change_all,output_format=args.output_format)
+    cover_path = voice_change_pipeline(args.song_input, args.voice_model, args.pitch_change, args.index_rate, args.filter_radius, args.rms_mix_rate, args.pitch_detection_algo, args.crepe_hop_length, args.protect, args.pitch_change_all, args.output_format)
     print(f'[+] Cover generated at {cover_path}')
