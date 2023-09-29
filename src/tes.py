@@ -243,7 +243,7 @@ def voice_change_pipeline(song_input, voice_model, pitch_change, is_webui=0, ind
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate an AI cover song in the song_output/id directory.', add_help=True)
     parser.add_argument('-i', '--song-input', type=str, required=True, help='Link to a YouTube video or the filepath to a local mp3/wav file to create an AI cover of')
-    parser.add_argument('-vm', '--voice-model', type=str, required=True, help='Name of the folder in the rvc_models directory containing the RVC model file and optional index file to use')
+    parser.add_argument('-dir', '--voice-model', type=str, required=True, help='Name of the folder in the rvc_models directory containing the RVC model file and optional index file to use')
     parser.add_argument('-p', '--pitch-change', type=int, required=True, help='Change the pitch of AI Vocals only. Generally, use 1 for male to female and -1 for vice-versa. (Octaves)')
     parser.add_argument('-palgo', '--pitch-detection-algo', type=str, default='rmvpe', help='Best option is rmvpe (clarity in vocals), then mangio-crepe (smoother vocals).')
     parser.add_argument('-hop', '--crepe-hop-length', type=int, default=128, help='If pitch detection algo is mangio-crepe, controls how often it checks for pitch changes in milliseconds. The higher the value, the faster the conversion and less risk of voice cracks, but there is less pitch accuracy. Recommended: 128.')
