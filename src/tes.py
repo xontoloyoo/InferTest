@@ -254,5 +254,13 @@ if __name__ == '__main__':
     parser.add_argument('-oformat', '--output-format', type=str, default='mp3', help='Output format of audio file. mp3 for smaller file size, wav for best quality')    
     args = parser.parse_args()
 
-    ai_vocals_path = voice_change_pipeline(args.song_input, args.voice_model, args.pitch_change)
-    print(f'[+] Voice change completed. Result saved at {ai_vocals_path}')
+ rvc_dirname = args.rvc_dirname
+    if not os.path.exists(os.path.join(rvc_models_dir, rvc_dirname)):
+        raise Exception(f'The folder {os.path.join(rvc_models_dir, rvc_dirname)} does not exist.')
+
+    cover_path = song_cover_pipeline(args.song_input, rvc_dirname, args.pitch_change, args.keep_files,
+                                     index_rate=args.index_rate, filter_radius=args.filter_radius,
+                                     rms_mix_rate=args.rms_mix_rate, f0_method=args.pitch_detection_algo,
+                                     crepe_hop_length=args.crepe_hop_length, protect=args.protect,
+                                     pitch_change_all=args.pitch_change_all,output_format=args.output_format)
+    print(f'[+] Cover generated at {cover_path}')
