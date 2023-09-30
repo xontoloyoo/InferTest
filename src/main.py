@@ -190,7 +190,7 @@ def preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type,
     return orig_song_path, vocals_path, instrumentals_path, main_vocals_path, backup_vocals_path, main_vocals_dereverb_path
 
 
-def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method, index_rate, filter_radius, rms_mix_rate, protect, crepe_hop_length, is_webui):
+def voice_change(voice_model, main_vocals_dereverb_path , output_path, pitch_change, f0_method, index_rate, filter_radius, rms_mix_rate, protect, crepe_hop_length, is_webui):
     rvc_model_path, rvc_index_path = get_rvc_model(voice_model, is_webui)
     device = 'cuda:0'
     config = Config(device, True)
