@@ -298,8 +298,8 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
             instrumentals_path = pitch_shift(instrumentals_path, pitch_change_all)
             backup_vocals_path = pitch_shift(backup_vocals_path, pitch_change_all)
 
-        display_progress('[~] Combining AI Vocals and Instrumentals...', 0.9, is_webui, progress)
-        combine_audio([ai_vocals_mixed_path], ai_cover_path, output_format)
+    #    display_progress('[~] Combining AI Vocals and Instrumentals...', 0.9, is_webui, progress)
+    #    combine_audio([ai_vocals_mixed_path], ai_cover_path, output_format)
 
         if not keep_files:
             display_progress('[~] Removing intermediate audio files...', 0.95, is_webui, progress)
