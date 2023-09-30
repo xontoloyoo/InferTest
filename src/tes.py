@@ -188,7 +188,8 @@ def preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type,
     vocals_dereverb_path = run_mdx(mdx_model_params, song_output_dir, os.path.join(mdxnet_models_dir, 'Reverb_HQ_By_FoxJoy.onnx'), orig_song_path, invert_suffix='DeReverb', exclude_main=True, denoise=True)
 
     
-    return orig_song_path, vocals_path, instrumentals_path, vocals_dereverb_path
+    #return orig_song_path, vocals_path, instrumentals_path, vocals_dereverb_path
+    return orig_song_path, vocals_dereverb_path
 
 
 def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method, index_rate, filter_radius, rms_mix_rate, protect, crepe_hop_length, is_webui):
@@ -270,7 +271,7 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
 
         if not os.path.exists(song_dir):
             os.makedirs(song_dir)
-            orig_song_path, vocals_path, instrumentals_path, main_vocals_dereverb_path = preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type, progress)
+            orig_song_path, vocals_dereverb_path = preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type, progress)
 
         else:
             vocals_path, main_vocals_path = None, None
@@ -278,7 +279,7 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
 
             # if any of the audio files aren't available or keep intermediate files, rerun preprocess
             if any(path is None for path in paths) or keep_files:
-                orig_song_path, vocals_path, instrumentals_path, vocals_dereverb_path = preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type, progress)
+                orig_song_path, vocals_dereverb_path = preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type, progress)
             else:
                 orig_song_path, instrumentals_path, main_vocals_dereverb_path, backup_vocals_path = paths
 
