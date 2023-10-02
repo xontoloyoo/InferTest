@@ -315,16 +315,16 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
     #    display_progress('[~] Combining AI Vocals and Instrumentals...', 0.9, is_webui, progress)
     #    combine_audio([ai_vocals_mixed_path], ai_cover_path, output_format)
 
-        if not keep_files:
-            display_progress('[~] Removing intermediate audio files...', 0.95, is_webui, progress)
-            intermediate_files = [ai_vocals_mixed_path]
-            if pitch_change_all != 0:
-                intermediate_files += [instrumentals_path, backup_vocals_path]
-            for file in intermediate_files:
-                if file and os.path.exists(file):
-                    os.remove(file)
+#        if not keep_files:
+#            display_progress('[~] Removing intermediate audio files...', 0.95, is_webui, progress)
+#            intermediate_files = [ai_vocals_mixed_path]
+#            if pitch_change_all != 0:
+#                intermediate_files += [instrumentals_path, backup_vocals_path]
+#            for file in intermediate_files:
+#                if file and os.path.exists(file):
+#                    os.remove(file)
 
-        return ai_vocals_path
+#        return ai_vocals_path
 
     except Exception as e:
         raise_exception(str(e), is_webui)
@@ -357,7 +357,7 @@ if __name__ == '__main__':
     if not os.path.exists(os.path.join(rvc_models_dir, rvc_dirname)):
         raise Exception(f'The folder {os.path.join(rvc_models_dir, rvc_dirname)} does not exist.')
 
-    cover_path = song_cover_pipeline(args.song_input, rvc_dirname, args.pitch_change, args.keep_files,
+    cover_path = song_cover_pipeline(args.song_input, rvc_dirname, args.pitch_change,
                                      main_gain=args.main_vol, backup_gain=args.backup_vol, inst_gain=args.inst_vol,
                                      index_rate=args.index_rate, filter_radius=args.filter_radius,
                                      rms_mix_rate=args.rms_mix_rate, f0_method=args.pitch_detection_algo,
