@@ -233,11 +233,11 @@ def add_audio_effects(audio_path):########################
   #  vocal_audio.export(output_path, format=output_format)
 def combine_audio(audio_paths, output_path, main_gain, backup_gain, output_format):
     vocals_dereverb_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + main_gain
-    orig_song_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + backup_gain
-    vocals_dereverb_audio.overlay(orig_song_audio).overlay.export(output_path, format=output_format)
+    ai_vocalsg_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + backup_gain
+    vocals_dereverb_audio.overlay(ai_vocals_audio).overlay.export(output_path, format=output_format)
 
 def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
-                        is_webui=0, main_gain=0, backup_gain=0, inst_gain=0, index_rate=0.5, filter_radius=3,
+                        is_webui=0, main_gain=0, backup_gain=0, index_rate=0.5, filter_radius=3,
                         rms_mix_rate=0.25, f0_method='rmvpe', crepe_hop_length=128, protect=0.33, pitch_change_all=0,
                         output_format='mp3',
                         progress=gr.Progress()):
@@ -344,7 +344,7 @@ if __name__ == '__main__':
         raise Exception(f'The folder {os.path.join(rvc_models_dir, rvc_dirname)} does not exist.')
 
     cover_path = song_cover_pipeline(args.song_input, rvc_dirname, args.pitch_change, args.keep_files,
-                                     main_gain=args.main_vol, backup_gain=args.backup_vol, inst_gain=args.inst_vol,
+                                     main_gain=args.main_vol, backup_gain=args.backup_vol,
                                      index_rate=args.index_rate, filter_radius=args.filter_radius,
                                      rms_mix_rate=args.rms_mix_rate, f0_method=args.pitch_detection_algo,
                                      crepe_hop_length=args.crepe_hop_length, protect=args.protect,
