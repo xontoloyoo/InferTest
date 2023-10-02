@@ -343,4 +343,4 @@ if __name__ == '__main__':
                                      crepe_hop_length=args.crepe_hop_length, protect=args.protect,
                                      pitch_change_all=args.pitch_change_all,
                                      output_format=args.output_format)
-    print(f'[+] Cover generated at
+    print(f'[+] Cover generated')
