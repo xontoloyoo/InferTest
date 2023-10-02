@@ -116,18 +116,6 @@ def convert_to_stereo(audio_path):
         return audio_path
 
 
-def pitch_shift(audio_path, pitch_change):
-    output_path = f'{os.path.splitext(audio_path)[0]}_p{pitch_change}.wav'
-    if not os.path.exists(output_path):
-        y, sr = sf.read(audio_path)
-        tfm = sox.Transformer()
-        tfm.pitch(pitch_change)
-        y_shifted = tfm.build_array(input_array=y, sample_rate_in=sr)
-        sf.write(output_path, y_shifted, sr)
-
-    return output_path
-
-
 def get_hash(filepath):
     with open(filepath, 'rb') as f:
         file_hash = hashlib.blake2b()
