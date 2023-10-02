@@ -233,7 +233,7 @@ def add_audio_effects(audio_path):########################
   #  vocal_audio.export(output_path, format=output_format)
 def combine_audio(audio_paths, output_path, main_gain, backup_gain, output_format):
     vocals_dereverb_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + main_gain
-    ai_vocalsg_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + backup_gain
+    ai_vocals_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + backup_gain
     vocals_dereverb_audio.overlay(ai_vocals_audio).overlay.export(output_path, format=output_format)
 
 def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
