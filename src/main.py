@@ -285,23 +285,20 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
         #pitch_change = pitch_change * 12 + pitch_change_all
         #ai_vocals_path = os.path.join(song_dir, f'{os.path.splitext(os.path.basename(orig_song_path))[0]}_{voice_model}_p{pitch_change}_i{index_rate}_fr{filter_radius}_rms{rms_mix_rate}_pro{protect}_{f0_method}{"" if f0_method != "mangio-crepe" else f"_{crepe_hop_length}"}.wav')
         #ai_cover_path = os.path.join(song_dir, f'{os.path.splitext(os.path.basename(orig_song_path))[0]} (Versi {voice_model}).{output_format}')
-
-       if pitch_change < 12:
-    pitch_change = pitch_change * 100  # Ubah 1 menjadi 100 untuk merepresentasikan perubahan satu not
-else:
-    pitch_change = pitch_change * 12  # Biarkan 12 sebagai satu oktaf
-
-ai_vocals_path = os.path.join(
-    song_dir,
-    f'{os.path.splitext(os.path.basename(orig_song_path))[0]}_{voice_model}_p{pitch_change}_i{index_rate}_fr{filter_radius}_rms{rms_mix_rate}_pro{protect}_{f0_method}{"" if f0_method != "mangio-crepe" else f"_{crepe_hop_length}"}.wav'
-)
-ai_cover_path = os.path.join(
-    song_dir,
-    f'{os.path.splitext(os.path.basename(orig_song_path))[0]} (Versi {voice_model}).{output_format}'
-)
-
-        
-        if not os.path.exists(ai_vocals_path):
+            if pitch_change < 12:
+                pitch_change = pitch_change * 100  # Ubah 1 menjadi 100 untuk merepresentasikan perubahan satu not
+            else:
+                pitch_change = pitch_change * 12  # Biarkan 12 sebagai satu oktaf
+            
+            ai_vocals_path = os.path.join(
+                song_dir,
+                f'{os.path.splitext(os.path.basename(orig_song_path))[0]}_{voice_model}_p{pitch_change}_i{index_rate}_fr{filter_radius}_rms{rms_mix_rate}_pro{protect}_{f0_method}{"" if f0_method != "mangio-crepe" else f"_{crepe_hop_length}"}.wav'
+            )
+            ai_cover_path = os.path.join(
+                song_dir,
+                f'{os.path.splitext(os.path.basename(orig_song_path))[0]} (Versi {voice_model}).{output_format}'
+            )        
+                    if not os.path.exists(ai_vocals_path):
             display_progress('[~] Converting voice using RVC...', 0.5, is_webui, progress)
             voice_change(voice_model, vocals_dereverb_path, ai_vocals_path, pitch_change, f0_method, index_rate, filter_radius, rms_mix_rate, protect, crepe_hop_length, is_webui)
 
