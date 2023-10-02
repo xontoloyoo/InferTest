@@ -203,7 +203,7 @@ def voice_change(voice_model, vocals_dereverb_path , output_path, pitch_change, 
     gc.collect()
 
 
-def add_audio_effects(audio_path):
+def add_audio_effects(audio_path):########################
     output_path = f'{os.path.splitext(audio_path)[0]}_mixed.wav'
 
     # Initialize audio effects plugins
@@ -231,7 +231,10 @@ def add_audio_effects(audio_path):
     #backup_vocal_audio = AudioSegment.from_wav(audio_paths[1]) - 6 + backup_gain
     #instrumental_audio = AudioSegment.from_wav(audio_paths[2]) - 7 + inst_gain
   #  vocal_audio.export(output_path, format=output_format)
-
+def combine_audio(audio_paths, output_path, main_gain, backup_gain, output_format):
+    vocals_dereverb_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + main_gain
+    orig_song_audio = AudioSegment.from_wav(audio_paths[1]) - 0 + backup_gain
+    vocals_dereverb_audio.overlay(orig_song_audio).overlay.export(output_path, format=output_format)
 
 def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
                         is_webui=0, main_gain=0, backup_gain=0, inst_gain=0, index_rate=0.5, filter_radius=3,
@@ -298,9 +301,9 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
             instrumentals_path = pitch_shift(instrumentals_path, pitch_change_all)
             backup_vocals_path = pitch_shift(backup_vocals_path, pitch_change_all)
 
-######
-    #    display_progress('[~] Combining AI Vocals and Instrumentals...', 0.9, is_webui, progress)
+        display_progress('[~] Combining AI Vocals and Instrumentals...', 0.9, is_webui, progress)
     #    combine_audio([ai_vocals_mixed_path], ai_cover_path, output_format)
+        combine_audio([ai_vocals_mixed_path], ai_cover_path, main_gain, backup_gain, output_format)
 
 #        if not keep_files:
 #            display_progress('[~] Removing intermediate audio files...', 0.95, is_webui, progress)
