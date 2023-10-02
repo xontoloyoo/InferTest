@@ -225,12 +225,6 @@ def add_audio_effects(audio_path):########################
 
     return output_path
 
-
-#def combine_audio(audio_paths, output_path, main_gain, backup_gain, inst_gain, output_format):
- #   vocal_audio = AudioSegment.from_wav(audio_paths[0]) - 4 + main_gain
-    #backup_vocal_audio = AudioSegment.from_wav(audio_paths[1]) - 6 + backup_gain
-    #instrumental_audio = AudioSegment.from_wav(audio_paths[2]) - 7 + inst_gain
-  #  vocal_audio.export(output_path, format=output_format)
 def combine_audio(audio_paths, output_path, main_gain, backup_gain, output_format):
     vocals_dereverb_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + main_gain
     ai_vocals_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + backup_gain
@@ -285,7 +279,7 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
             else:
                 orig_song_path, vocals_dereverb_path = paths
 
-        pitch_change = pitch_change * 12 + pitch_change_all
+        pitch_change = pitch_change * 0 + pitch_change_all
         ai_vocals_path = os.path.join(song_dir, f'{os.path.splitext(os.path.basename(orig_song_path))[0]}_{voice_model}_p{pitch_change}_i{index_rate}_fr{filter_radius}_rms{rms_mix_rate}_pro{protect}_{f0_method}{"" if f0_method != "mangio-crepe" else f"_{crepe_hop_length}"}.wav')
         ai_cover_path = os.path.join(song_dir, f'{os.path.splitext(os.path.basename(orig_song_path))[0]} (Versi {voice_model}).{output_format}')
             
@@ -302,7 +296,6 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
             backup_vocals_path = pitch_shift(backup_vocals_path, pitch_change_all)
 
         display_progress('[~] Combining AI Vocals and Instrumentals...', 0.9, is_webui, progress)
-    #    combine_audio([ai_vocals_mixed_path], ai_cover_path, output_format)
         combine_audio([ai_vocals_mixed_path], ai_cover_path, main_gain, backup_gain, output_format)
 
 #        if not keep_files:
