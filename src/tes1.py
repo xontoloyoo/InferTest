@@ -233,7 +233,7 @@ def song_cover_pipeline(song_input, keep_files, is_webui=0, output_format='mp3',
                 if file and os.path.exists(file):
                     os.remove(file)
 
-        return ai_vocals_path
+        return vocals_path
 
    # except Exception as e:
    #     raise_exception(str(e), is_webui)
