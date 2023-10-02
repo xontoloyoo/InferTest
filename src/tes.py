@@ -306,8 +306,8 @@ def song_cover_pipeline(song_input, is_webui=0, output_format='mp3',
 
     #    return ai_vocals_path
 
-    except Exception as e:
-        raise_exception(str(e), is_webui)
+   # except Exception as e:
+   #     raise_exception(str(e), is_webui)
 
 
 if __name__ == '__main__':
