@@ -180,7 +180,7 @@ def preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type,
 
     return output_path
 
-def song_cover_pipeline(song_input, is_webui=0,keep_files, output_format='mp3',
+def song_cover_pipeline(song_input, keep_files, is_webui=0, output_format='mp3',
                         progress=gr.Progress()):
 
         display_progress('[~] Starting AI Cover Generation Pipeline...', 0, is_webui, progress)
