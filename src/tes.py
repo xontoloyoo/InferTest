@@ -230,9 +230,8 @@ def preprocess_song(song_input, mdx_model_params, song_id, is_webui, input_type,
   #  ai_vocals_audio = AudioSegment.from_wav(audio_paths[0]) - 0 + backup_gain
    # vocals_dereverb_audio.overlay(ai_vocals_audio).export(output_path, format=output_format)
 
-def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
+def song_cover_pipeline(song_input, voice_model, pitch_change,
                         is_webui=0, main_gain=0, backup_gain=0, index_rate=0.5, filter_radius=3,
-                        rms_mix_rate=0.25, f0_method='rmvpe', crepe_hop_length=128, protect=0.33, pitch_change_all=0,
                         output_format='mp3',
                         progress=gr.Progress()):
     try:
@@ -336,6 +335,6 @@ if __name__ == '__main__':
     #if not os.path.exists(os.path.join(rvc_models_dir, rvc_dirname)):
     #    raise Exception(f'The folder {os.path.join(rvc_models_dir, rvc_dirname)} does not exist.')
 
-    cover_path = song_cover_pipeline(args.song_input, args.keep_files,
+    cover_path = song_cover_pipeline(args.song_input,
                                      output_format=args.output_format)
     print(f'[+] Cover generated')
