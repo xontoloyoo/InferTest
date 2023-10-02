@@ -300,9 +300,9 @@ def song_cover_pipeline(song_input, voice_model, pitch_change, keep_files,
 
         if not keep_files:
             display_progress('[~] Removing intermediate audio files...', 0.95, is_webui, progress)
-            intermediate_files = [vocals_path, ai_vocals_mixed_path]
+            intermediate_files = [ai_vocals_path, ai_vocals_mixed_path]
             if pitch_change_all != 0:
-                intermediate_files += [instrumentals_path, backup_vocals_path]
+                intermediate_files += [ai_vocals_path, ai_vocals_mixed_path]
             for file in intermediate_files:
                 if file and os.path.exists(file):
                     os.remove(file)
