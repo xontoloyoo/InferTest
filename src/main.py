@@ -211,7 +211,7 @@ def add_audio_effects(audio_path, reverb_rm_size, reverb_wet, reverb_dry, reverb
         [
             HighpassFilter(),
             Compressor(ratio=4, threshold_db=-15),
-            Reverb(room_size=reverb_rm_size, dry_level=reverb_dry, wet_level=reverb_wet, damping=reverb_damping)
+            #Reverb(room_size=reverb_rm_size, dry_level=reverb_dry, wet_level=reverb_wet, damping=reverb_damping)
          ]
     )
 
@@ -363,7 +363,5 @@ if __name__ == '__main__':
                                      rms_mix_rate=args.rms_mix_rate, f0_method=args.pitch_detection_algo,
                                      crepe_hop_length=args.crepe_hop_length, protect=args.protect,
                                      pitch_change_all=args.pitch_change_all,
-                                     reverb_rm_size=args.reverb_size, reverb_wet=args.reverb_wetness,
-                                     reverb_dry=args.reverb_dryness, reverb_damping=args.reverb_damping,
                                      output_format=args.output_format)
     print(f'[+] Cover generated at {cover_path}')
