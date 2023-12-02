@@ -15,8 +15,8 @@ import soundfile as sf
 #import sox
 import yt_dlp
 #from pedalboard import Pedalboard, Reverb, Compressor, HighpassFilter
-from pedalboard import Reverb, Compressor, HighpassFilter
-from pedalboard.io import AudioFile
+#from pedalboard import Reverb, Compressor, HighpassFilter
+#from pedalboard.io import AudioFile
 from pydub import AudioSegment
 
 from mdx import run_mdx
