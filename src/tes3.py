@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 now_dir = os.getcwd()
 sys.path.append(now_dir)
 load_dotenv()
-from infer.modules.uvr5.modules import uvr
+from mdx import run_mdx
+#from infer_pack.modules.uvr5.modules import uvr
 import shutil
 
 shutil.rmtree("%s/runtime/Lib/site-packages/uvr5_pack" % (now_dir), ignore_errors=True)
