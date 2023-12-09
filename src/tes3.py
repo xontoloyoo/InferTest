@@ -13,7 +13,9 @@ import shutil
 
 shutil.rmtree("%s/runtime/Lib/site-packages/uvr5_pack" % (now_dir), ignore_errors=True)
 
-weight_uvr5_root = os.getenv("weight_uvr5_root")
+#weight_uvr5_root = os.getenv("weight_uvr5_root")
+weight_uvr5_root = mdxnet_models
+
 
 uvr5_names = []
 for name in os.listdir(weight_uvr5_root):
