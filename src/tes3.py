@@ -30,12 +30,17 @@ with gr.Blocks(title="R") as app:
             )
             with gr.Row():
                 with gr.Column():
-                    dir_wav_input = gr.Textbox("输入待处理音频文件夹路径",
-                        placeholder="C:\\Users\\Desktop\\todo-songs")
+                    dir_wav_input = gr.Textbox(
+                        label="输入待处理音频文件夹路径",
+                        placeholder="C:\\Users\\Desktop\\todo-songs",
+                    )
                     wav_inputs = gr.File(
-                        file_count="multiple", "也可批量输入音频文件, 二选一, 优先读文件夹")
+                        file_count="multiple", label="也可批量输入音频文件, 二选一, 优先读文件夹"
+                    )
                 with gr.Column():
-                    model_choose = gr.Dropdown("模型", choices=uvr5_names  # Perbaiki tanda kurung
+                    model_choose = gr.Dropdown(
+                        label="模型", choices=uvr5_names
+                    )  # Perbaiki tanda kurung
                     agg = gr.Slider(
                         minimum=0,
                         maximum=20,
@@ -45,15 +50,22 @@ with gr.Blocks(title="R") as app:
                         interactive=True,
                         visible=False,  # 先不开放调整
                     )
-                    opt_vocal_root = gr.Textbox("指定输出主人声文件夹", value="opt")
-                    opt_ins_root = gr.Textbox("指定输出非主人声文件夹", value="opt")
-                    format0 = gr.Radio("导出文件格式",
+                    opt_vocal_root = gr.Textbox(
+                        label="指定输出主人声文件夹", value="opt"
+                    )
+                    opt_ins_root = gr.Textbox(
+                        label="指定输出非主人声文件夹", value="opt"
+                    )
+                    format0 = gr.Radio(
+                        label="导出文件格式",
                         choices=["wav", "flac", "mp3", "m4a"],
                         value="flac",
                         interactive=True,
                     )
-            but2 = gr.Button("转换", variant="primary")  # Perbaiki tanda kurung dan label
-            vc_output4 = gr.Textbox("输出信息")  # Perbaiki tanda kurung
+            but2 = gr.Button(
+                label="转换", variant="primary"
+            )  # Perbaiki tanda kurung dan label
+            vc_output4 = gr.Textbox(label="输出信息")  # Perbaiki tanda kurung
             but2.click(
                 uvr.uvr_convert,
                 [
