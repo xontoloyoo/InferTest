@@ -63,7 +63,7 @@ with gr.Blocks(title="R") as app:
                         interactive=True,
                     )
             but2 = gr.Button(
-                label="转换", variant="primary"
+                theme="转换", variant="primary"
             )  # Perbaiki tanda kurung dan label
             vc_output4 = gr.Textbox(label="输出信息")  # Perbaiki tanda kurung
             but2.click(
