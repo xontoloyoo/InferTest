@@ -31,15 +31,11 @@ with gr.Blocks(title="R") as app:
             with gr.Row():
                 with gr.Column():
                     dir_wav_input = gr.Textbox("输入待处理音频文件夹路径",
-                        placeholder="C:\\Users\\Desktop\\todo-songs",
-                    )
+                        placeholder="C:\\Users\\Desktop\\todo-songs")
                     wav_inputs = gr.File(
-                        file_count="multiple", "也可批量输入音频文件, 二选一, 优先读文件夹"
-                    )
+                        file_count="multiple", "也可批量输入音频文件, 二选一, 优先读文件夹")
                 with gr.Column():
-                    model_choose = gr.Dropdown(
-                        label="模型", choices=uvr5_names
-                    )  # Perbaiki tanda kurung
+                    model_choose = gr.Dropdown("模型", choices=uvr5_names  # Perbaiki tanda kurung
                     agg = gr.Slider(
                         minimum=0,
                         maximum=20,
