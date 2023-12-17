@@ -6,7 +6,7 @@ from infer.modules.vc.modules import VC
 from infer.modules.uvr5.modules import uvr
 from configs.config import Config
 from sklearn.cluster import MiniBatchKMeans
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 import torch
 import numpy as np
 import gradio as gr
@@ -14,14 +14,14 @@ import faiss
 import fairseq
 import pathlib
 import json
-from time import sleep
+#from time import sleep
 from subprocess import Popen
-from random import shuffle
-import warnings
-import traceback
-import threading
-import shutil
-import logging
+#from random import shuffle
+#import warnings
+#import traceback
+#import threading
+#import shutil
+#import logging
 
 load_dotenv()
 config = Config()
@@ -43,7 +43,7 @@ tmp = os.path.join(now_dir, "TEMP")
 shutil.rmtree(tmp, ignore_errors=True)
 os.makedirs(tmp, exist_ok=True)
 os.environ["TEMP"] = tmp
-weight_uvr5 = ('assets/uvr5_weights')
+weight_uvr5 = ('mdxnet_models')
 
 uvr5_names = []
 for name in os.listdir(weight_uvr5):
