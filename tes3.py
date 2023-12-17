@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 from infer.modules.vc.modules import VC
 from infer.modules.uvr5.modules import uvr
-from configs.config import Config
+from src.configs.config import Config
 from sklearn.cluster import MiniBatchKMeans
 #from dotenv import load_dotenv
 import torch
