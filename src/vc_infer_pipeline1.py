@@ -319,6 +319,8 @@ class VC(object):
             f0 = self.get_f0_crepe_computation(
                 x, f0_min, f0_max, p_len, crepe_hop_length, "tiny"
             )
+        #elif f0_method == "fcpe":
+        #    f0 = self.get_fcpe(x, f0_min=f0_min, f0_max=f0_max, p_len=p_len)
         elif f0_method == "rmvpe":
             if hasattr(self, "model_rmvpe") == False:
                 from rmvpe import RMVPE
@@ -326,8 +328,19 @@ class VC(object):
                 self.model_rmvpe = RMVPE(
                     os.path.join(BASE_DIR, 'rvc_models', 'rmvpe.pt'), is_half=self.is_half, device=self.device
                 )
-            f0 = self.model_rmvpe.infer_from_audio(x, thred=0.03)
+            f0 = self.model_rmvpe.infer_from_audio(x, thred=0.03)     
 
+        elif f0_method == "fcpe":
+            f0 = self.get_fcpe(x, f0_min=f0_min, f0_max=f0_max, p_len=p_len)
+            if hasattr(self, "model_fcpe") == False:
+                from lib.infer.infer_libs.FCPEF0Predictor import FCPEF0Predictor
+
+                self.model_fcpe = FCPEF0Predictor(
+                    #os.path.join(BASE_DIR, 'rvc_models', 'fcpe.pt'), is_half=self.is_half, device=self.device
+                    os.path.join(BASE_DIR, 'rvc_models', 'fcpe.pt'), f0_min=f0_min, f0_max=f0_max, dtype=torch.float32, device=self.device, sampling_rate=self.sr, threshold=0.03
+                )
+            f0 = self.model_fcpe.compute_f0(x, p_len=p_len)
+        
         elif "hybrid" in f0_method:
             # Perform hybrid median pitch estimation
             input_audio_path2wav[input_audio_path] = x.astype(np.double)
