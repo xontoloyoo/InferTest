@@ -173,7 +173,6 @@ class VC(object):
     ):
       f0 = self.model_fcpe.compute_f0(x, p_len=p_len)
       return f0
-      #f0 = self.model_fcpe.compute_f0(x, p_len=p_len)
 
     # Fork Feature: Compute pYIN f0 method
     def get_f0_pyin_computation(self, x, f0_min, f0_max):
@@ -238,9 +237,9 @@ class VC(object):
                 f0 = self.get_f0_crepe_computation(
                     x, f0_min, f0_max, p_len, crepe_hop_length, "tiny"
                 )
-            elif f0_method == "fcpe":
+            elif method == "fcpe":
                  f0 = self.get_fcpe(
-                      x, f0_min, f0_max=f0_max, p_len=p_len
+                      x, f0_min, f0_max, p_len
                 )                
             elif method == "harvest":
                 f0 = cache_harvest_f0(input_audio_path, self.sr, f0_max, f0_min, 10)
@@ -348,6 +347,7 @@ class VC(object):
                 from fcpe import FCPEF0Predictor
 
                 self.model_fcpe = FCPEF0Predictor(
+                    #os.path.join(BASE_DIR, 'rvc_models', 'fcpe.pt'), hop_length=512, f0_min=50, f0_max=1100, dtype=torch.float32, device=self.device, sampling_rate=self.sr, threshold=0.05
                     os.path.join(BASE_DIR, 'rvc_models', 'fcpe.pt'), f0_min=f0_min, f0_max=f0_max, dtype=torch.float32, device=self.device, sampling_rate=self.sr, threshold=0.03
                 )
             f0 = self.model_fcpe.compute_f0(x, p_len=p_len)
