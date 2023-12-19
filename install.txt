@@ -24,3 +24,4 @@ yt_dlp==2023.7.6
 sox==1.4.1
 gTTS
 av
+PyDrive
