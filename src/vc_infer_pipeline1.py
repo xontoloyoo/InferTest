@@ -333,7 +333,7 @@ class VC(object):
         elif f0_method == "fcpe":
             f0 = self.get_fcpe(x, f0_min=f0_min, f0_max=f0_max, p_len=p_len)
             if hasattr(self, "model_fcpe") == False:
-                from lib.infer.infer_libs.FCPEF0Predictor import FCPEF0Predictor
+                from FCPEF0Predictor import FCPEF0Predictor
 
                 self.model_fcpe = FCPEF0Predictor(
                     #os.path.join(BASE_DIR, 'rvc_models', 'fcpe.pt'), is_half=self.is_half, device=self.device
