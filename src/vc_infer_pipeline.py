@@ -195,10 +195,15 @@ class VC(object):
         time_step,
     ):
         # Get various f0 methods from input to use in the computation stack
-        s = methods_str
-        s = s.split("hybrid")[1]
-        s = s.replace("[", "").replace("]", "")
-        methods = s.split("+")
+        #s = methods_str
+        #s = s.split("hybrid")[1]
+        #s = s.replace("[", "").replace("]", "")
+        #methods = s.split("+")
+        #f0_computation_stack = []
+
+        methods_str = re.search('hybrid\[(.+)\]', methods_str)
+        if methods_str:  # Ensure a match was found
+             methods = [method.strip() for method in methods_str.group(1).split('+')]
         f0_computation_stack = []
 
         print("Calculating f0 pitch estimations for methods: %s" % str(methods))
@@ -239,7 +244,7 @@ class VC(object):
                 )
             elif method == "fcpe":
                  f0 = self.get_fcpe(
-                      x, f0_min, f0_max, p_len
+                      x, f0_min=f0_min, f0_max=f0_max, p_len=p_len
                 )                
             elif method == "harvest":
                 f0 = cache_harvest_f0(input_audio_path, self.sr, f0_max, f0_min, 10)
