@@ -119,6 +119,7 @@ class VC(object):
         p_len,
         hop_length=160,
         model="full",  # Either use crepe-tiny "tiny" or crepe "full". Default is full        crepe_hop_length=160,  # 512 before. Hop length changes the speed that the voice jumps to a different dramatic pitch. Lower hop lengths means more pitch accuracy but longer inference time.
+        **kwargs
     ):
         x = x.astype(
             np.float32
@@ -130,6 +131,8 @@ class VC(object):
         if audio.ndim == 2 and audio.shape[0] > 1:
             audio = torch.mean(audio, dim=0, keepdim=True).detach()
         audio = audio.detach()
+        hop_length = kwargs.get('crepe_hop_length', 160)
+        model = kwargs.get('model', 'full') 
         print("Initiating prediction with a crepe_hop_length of: " + str(hop_length))
         pitch: Tensor = torchcrepe.predict(
             audio,
@@ -194,7 +197,23 @@ class VC(object):
             from rmvpe import RMVPE
             self.model_rmvpe = RMVPE(os.path.join(BASE_DIR, 'rvc_models', 'rmvpe.pt'), is_half=self.is_half, device=self.device)
         f0 = self.model_rmvpe.infer_from_audio(x, thred=0.03)
+        if "privateuseone" in str(self.device):  # clean ortruntime memory
+                del self.model_rmvpe.model
+                del self.model_rmvpe
+
         return f0
+
+    #def get_pitch_dependant_rmvpe(self, x, f0_min=1, f0_max=40000, *args, **kwargs):
+    def get_pitch_dependant_rmvpe(self, x, f0_min=1, f0_max=40000, **kwargs):
+        if not hasattr(self, "model_rmvpe"):
+            from rmvpe import RMVPE
+            self.model_rmvpe = RMVPE(os.path.join(BASE_DIR, 'rvc_models', 'rmvpe.pt'), is_half=self.is_half, device=self.device)
+        f0 = self.model_rmvpe.infer_from_audio_with_pitch(x, thred=0.03, f0_min=f0_min, f0_max=f0_max)
+        if "privateuseone" in str(self.device):  # clean ortruntime memory
+                del self.model_rmvpe.model
+                del self.model_rmvpe
+            
+        return f0            
 
     # Fork Feature: Compute pYIN f0 method
     def get_f0_pyin_computation(self, x, f0_min, f0_max):
@@ -238,7 +257,7 @@ class VC(object):
                 f0 = f0[1:]  # Get rid of extra first frame
             elif method == "mangio-crepe":
                 f0 = self.get_f0_crepe_computation(
-                    x, f0_min, f0_max, p_len, crepe_hop_length
+                    x, f0_min, f0_max, p_len, crepe_hop_length, model="full"
                 )
             elif method == "mangio-crepe-tiny":
                 f0 = self.get_f0_crepe_computation(
@@ -351,7 +370,7 @@ class VC(object):
             f0 = self.get_f0_official_crepe_computation(x, f0_min, f0_max, model="tiny")
         elif f0_method == "mangio-crepe":
             f0 = self.get_f0_crepe_computation(
-                x, f0_min, f0_max, p_len, crepe_hop_length
+                x, f0_min, f0_max, p_len, crepe_hop_length, model="full"
             )
         elif f0_method == "mangio-crepe-tiny":
             f0 = self.get_f0_crepe_computation(
@@ -364,16 +383,24 @@ class VC(object):
                 self.model_rmvpe = RMVPE(
                     os.path.join(BASE_DIR, 'rvc_models', 'rmvpe.pt'), is_half=self.is_half, device=self.device
                 )
-            f0 = self.model_rmvpe.infer_from_audio(x, thred=0.03)     
-
+            f0 = self.model_rmvpe.infer_from_audio(x, thred=0.03)
+            if "privateuseone" in str(self.device):  # clean ortruntime memory
+                del self.model_rmvpe.model
+                del self.model_rmvpe
+        elif f0_method == "rmvpe+":
+            params = {'x': x, 'p_len': p_len, 'f0_up_key': f0_up_key, 'f0_min': f0_min, 
+                      'f0_max': f0_max, 'time_step': time_step, 'filter_radius': filter_radius, 
+                      'crepe_hop_length': crepe_hop_length, 'model': "full"}
+            f0 = self.get_pitch_dependant_rmvpe(**params)    
+      #  elif f0_method == "fcpe":
+      #      f0 = self.get_fcpe(x, f0_min=f0_min, f0_max=f0_max, p_len=p_len)
         elif f0_method == "fcpe":
             if hasattr(self, "model_fcpe") == False:
                 from fcpe import FCPEF0Predictor
 
                 self.model_fcpe = FCPEF0Predictor(
                     #os.path.join(BASE_DIR, 'rvc_models', 'fcpe.pt'), hop_length=512, f0_min=50, f0_max=1100, dtype=torch.float32, device=self.device, sampling_rate=self.sr, threshold=0.05
-                    os.path.join(BASE_DIR, 'rvc_models', 'fcpe.pt'), f0_min=f0_min, f0_max=f0_max, dtype=torch.float32, device=self.device, sampling_rate=self.sr, threshold=0.03
-                )
+                    os.path.join(BASE_DIR, 'rvc_models', 'fcpe.pt'), f0_min=f0_min, f0_max=f0_max, dtype=torch.float32, device=self.device, sampling_rate=self.sr, threshold=0.03)
             f0 = self.model_fcpe.compute_f0(x, p_len=p_len)
         
         elif f0_method == "pyin":
